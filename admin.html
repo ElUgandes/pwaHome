@@ -1,0 +1,408 @@
+<!-- admin.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+  <title>Administrador - Home Essence</title>
+  <link rel="stylesheet" href="inicio.css">
+  <link rel="stylesheet" href="bootstrap.css">
+  <link rel="stylesheet" href="styleIcons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    body { background:#f7f7f7; }
+    .thumb { object-fit: cover; height: 100px; border-radius: .5rem; }
+    .thumb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; }
+  </style>
+</head>
+<body class="pb-5">
+
+  <div class="content">
+    <div class="menu container">
+        <img class ="logo" src="img/logo.png"alt="">
+        <input type="checkbox" id="menu"/>
+        <label for="menu">
+            <img src="img/pinkmenu.png" class="menu-icono" alt="">
+        </label>
+        <h1 class="slogan">Administrador De Productos</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a id="inicio" href="index.html" target="_blank"><span class="icon-home"></span>Inicio</a></li>
+                <li><a href="tienda.html" target="_blank"><span class="icon-shopping-bag"></span>Tienda</a></li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+      <button class="agregar" data-bs-toggle="modal" data-bs-target="#productoModal"
+      onclick="document.getElementById('productoModal').style.display='block'">
+        <i class="bi bi-plus-lg"></i>
+
+      </button>
+    
+
+<main class="container mt-4">
+  <div id="alertConfig" class="alert alert-warning d-none">
+    <strong>Configura Firebase:</strong> Verifica la configuración en la consola.
+  </div>
+  <div class="lista">
+    <h5>Lista de productos registrados</h5></div>
+  <div id="productsContainer" class="row"></div>
+</main>
+
+<!-- Formulario para registrar productos-->
+<div class="modal fade" id="productoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <img class ="logo2" src="img/logo.png"alt="">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="productoForm">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nombre del Producto *</label>
+              <input id="nombreProducto" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Coodigo del Producto *</label>
+              <input id="codigo" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Marca *</label>
+              <input id="marca" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label"> Modelo*</label>
+              <input id="modelo" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Colores Disponibles *</label>
+              <input id="color" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Dimensiones del Producto *</label>
+              <input id="tamaño" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Precio (MXN) *</label>
+              <input type="number" step="0.01" id="precioProducto" class="form-control" required />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Descripción *</label>
+              <textarea id="descripcion" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Categoría *</label>
+              <input id="categoria" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Stock Disponible *</label>
+              <input type="number" id="stock" class="form-control" value="1" min="0" required />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Imágenes del Producto</label>
+              <input type="file" id="imagenesProducto" class="form-control" accept="image/*" multiple />
+              <div class="form-text">
+                <br>
+                <p class="nota">Puedes seleccionar múltiples imágenes, se subirán a Cloudinary.</p>
+              </div>
+              <div id="previewImagenes" class="thumb-grid mt-2"></div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar registro</button>
+    <button class="btn btn-primary" type="submit" id="submitBtn">
+      <span class="spinner-border spinner-border-sm d-none" id="submitSpinner"></span>
+      Registrar producto
+    </button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="module">
+ 
+  // Configuración Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCfj0zE4_zPwinnTEC5rw1EqFzpMo1iP-0",
+    authDomain: "friendly-retina-293203.firebaseapp.com",
+    databaseURL: "https://friendly-retina-293203.firebaseio.com",
+    projectId: "friendly-retina-293203",
+    storageBucket: "friendly-retina-293203.appspot.com",
+    messagingSenderId: "818178969253",
+    appId: "1:818178969253:web:22ad49913a7347c371474c",
+    measurementId: "G-8QS2ZB4BM4"
+  };
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { 
+    getFirestore, collection, addDoc, serverTimestamp,
+    onSnapshot, query, orderBy, deleteDoc, doc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // HABILITAR PERSISTENCIA OFFLINE DE FIRESTORE
+import { enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+enableIndexedDbPersistence(db)
+  .then(() => {
+    console.log("Persistencia offline habilitada");
+    showAlert("Modo offline disponible", "success");
+  })
+  .catch((err) => {
+    if (err.code == 'failed-precondition') {
+      console.log("Múltiples pestañas abiertas");
+    } else if (err.code == 'unimplemented') {
+      console.log("Navegador no soporta persistencia");
+    }
+  });
+
+// DETECCIÓN DE CONEXIÓN
+function updateOnlineStatus() {
+  const status = navigator.onLine ? 'online' : 'offline';
+  
+  if (!navigator.onLine) {
+    showAlert("🔌 Modo offline activado - Trabajando localmente", "warning");
+  } else {
+    showAlert("🌐 Conectado - Sincronizando con servidor", "success");
+  }
+}
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+  
+  // Cloudinary
+  const cloudName = "dghzl1j6g";      
+  const uploadPreset = "pwa_unsigned";
+
+  const modal = new bootstrap.Modal(document.getElementById('productoModal'));
+  const form = document.getElementById('productoForm');
+  const container = document.getElementById('productsContainer');
+  const imagenesInput = document.getElementById('imagenesProducto');
+  const previewDiv = document.getElementById('previewImagenes');
+
+  function currencyMX(n){
+    return Number(n||0).toLocaleString('es-MX',{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
+  }
+
+  // Vista de imágenes
+  imagenesInput.addEventListener('change', function(e) {
+    previewDiv.innerHTML = '';
+    const files = Array.from(e.target.files);
+    
+    files.forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'thumb w-100';
+        img.style.height = '80px';
+        img.style.objectFit = 'cover';
+        previewDiv.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+//Creación de catálogo
+  function renderProducts(productos) {
+    container.innerHTML = '';
+    
+    if (productos.length === 0) {
+      container.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <i class="bi bi-inbox display-1 text-muted"></i>
+          <h4 class="text-muted mt-3">No hay productos</h4>
+          <p class="text-muted">Agrega tu primer producto haciendo clic en "Nuevo Producto"</p>
+        </div>
+      `;
+      return;
+    }
+    
+    productos.forEach(p => {
+      const col = document.createElement('div');
+      col.className = 'col-md-6 col-lg-4 mb-4';
+
+      const imagenesHTML = Array.isArray(p.imagenes) && p.imagenes.length > 0 
+        ? p.imagenes.map(url => `<img src="${url}" class="thumb" alt="${p.nombre}">`).join('')
+        : `<img src="${p.imagenUrl || 'https://via.placeholder.com/100x100?text=Sin+Imagen'}" class="thumb" alt="${p.nombre}">`;
+//Tarjetas de productos registrados
+  
+
+
+col.innerHTML = `
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="thumb-grid mb-3">
+              ${imagenesHTML}
+            </div>
+            <br>
+            <h5 class="card-title">${p.nombre}</h5>
+            <p class="card-text">${p.descripcion}</p>
+            <p class="card-text">
+              <strong>Precio:</strong> $${currencyMX(p.precio)}<br>
+              <strong>Categoría:</strong> ${p.categoria}<br>
+              <strong>Código:</strong> ${p.codigo}<br>
+              <strong>Marca:</strong> ${p.marca}<br>
+              <strong>Modelo:</strong> ${p.modelo}<br>
+              <strong>Colores Disponibles:</strong> ${p.color}<br>
+              <strong>Dimensiones:</strong> ${p.tamaño}<br>
+              <strong>Stock:</strong> 
+              <span class="badge ${p.stock > 0 ? 'bg-success' : 'bg-danger'}">${p.stock}</span>
+            </p>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-danger w-100" data-action="delete" data-id="${p._id}">
+               Dar de baja este producto<i class="bi bi-trash3"></i>
+            </button>
+          </div>
+        </div>`;
+      container.appendChild(col);
+    });
+
+    container.querySelectorAll('[data-action="delete"]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        if (id && confirm('¿Eliminar este producto?')) {
+          await deleteDoc(doc(db,'productos', id));
+        }
+      });
+    });
+  }
+
+  const productosRef = collection(db, 'productos');
+  const q = query(productosRef, orderBy('createdAt','desc'));
+
+  onSnapshot(q, (snap) => {
+    const arr = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+    renderProducts(arr);
+  });
+
+  // Subir múltiples imágenes a Cloudinary
+  async function uploadImagesToCloudinary(files) {
+    const urls = [];
+    
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
+      formData.append("folder", "productos");
+
+      try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+        if (data.secure_url) {
+          urls.push(data.secure_url);
+        }
+      } catch (error) {
+        console.error("Error subiendo imagen:", error);
+      }
+    }
+    
+    return urls;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('submitSpinner');
+    
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    const nombre = document.getElementById('nombreProducto').value.trim();
+    const codigo = document.getElementById('codigo').value.trim();
+    const marca = document.getElementById('marca').value.trim();
+    const modelo = document.getElementById('modelo').value.trim();
+    const color = document.getElementById('color').value.trim();
+    const tamaño = document.getElementById('tamaño').value.trim();
+    const precio = parseFloat(document.getElementById('precioProducto').value || '0');
+    const descripcion = document.getElementById('descripcion').value.trim();
+    const categoria = document.getElementById('categoria').value.trim();
+    const stock = parseInt(document.getElementById('stock').value || '0');
+    const imagenesInput = document.getElementById('imagenesProducto');
+
+    try {
+      let imagenesUrls = [];
+
+      if (imagenesInput.files.length > 0) {
+        imagenesUrls = await uploadImagesToCloudinary(Array.from(imagenesInput.files));
+      }
+
+      await addDoc(productosRef, {
+        nombre,
+        codigo,
+        marca,
+        modelo,
+        material,
+        color,
+        tamaño,
+        precio,
+        descripcion,
+        categoria,
+        stock,
+        imagenes: imagenesUrls,
+        imagenUrl: imagenesUrls[0] || '',
+        createdAt: serverTimestamp()
+      });
+
+      showAlert('Producto guardado correctamente!', 'success');
+      
+      e.target.reset();
+      previewDiv.innerHTML = '';
+      modal.hide();
+
+    } catch (error) {
+      console.error('Error guardando producto:', error);
+      showAlert('Error al guardar el producto', 'danger');
+    } finally {
+      submitBtn.disabled = false;
+      spinner.classList.add('d-none');
+    }
+  });
+
+  function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+    alertDiv.style.zIndex = '1060';
+    alertDiv.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+      alertDiv.remove();
+    }, 5000);
+  }
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+</script>
+</body>
+</html>

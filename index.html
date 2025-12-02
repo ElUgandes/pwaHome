@@ -1,0 +1,93 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Essence-Inicio</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#007bff">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Beau+Rivage&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Parkinsans:wght@300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unna:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> 
+</head>
+<body>
+    <h1>Home Essence</h1>
+    <p>Selecciona un usuario</p>
+    <br>
+    <div class="menu">
+        <video muted autoplay loop>
+            <source src="img/video.mp4" type="video/mp4">
+        </video>
+        <a href="tienda.html" class="img1"></a>
+        <p class="btn tienda"><a href="tienda.html">Tienda</a></p>
+        <a href="admin.html" class="img2"></a>
+        <p class="btn admin"><a href="admin.html">Administador</a></p>
+
+    </div>
+<br>
+    <div id="status" class="status" style="display: none;">
+        <span id="statusText"></span>
+    </div>
+
+    <script>
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => {
+                    console.log('Service Worker registrado');
+                    showStatus('App lista para instalar', 'green');
+                })
+                .catch(error => {
+                    console.log('Error SW:', error);
+                    showStatus('Sin funcionalidad offline', 'orange');
+                });
+        } else {
+            showStatus('Service Worker no soportado', 'red');
+        }
+
+        // Mostrar botón de instalación PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showStatus('Haz clic aquí para instalar la app', 'blue');
+            
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.cursor = 'pointer';
+            statusDiv.onclick = installPWA;
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showStatus('App instalada', 'green');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        function showStatus(message, color) {
+            const statusDiv = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = message;
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = color === 'green' ? '#d4edda' : 
+                                       color === 'red' ? '#f8d7da' : 
+                                       color === 'orange' ? '#fff3cd' : '#cce7ff';
+            statusDiv.style.color = color === 'green' ? '#155724' : 
+                                  color === 'red' ? '#721c24' : 
+                                  color === 'orange' ? '#856404' : '#004085';
+        }
+    </script>
+    
+</body>
+</html>
