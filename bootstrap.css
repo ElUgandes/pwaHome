@@ -2990,9 +2990,11 @@ background-color: #45556C;
 .form-control{
     background-color: white ;
     border-color: black;
+    color: #000;
 }
 .form-control:enabled{
     background-color: white;
+    color: #000;
 }
 
 
