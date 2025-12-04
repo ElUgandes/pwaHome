@@ -2,10 +2,10 @@
 const CACHE_NAME = 'tienda-pwa-v3';
 const urlsToCache = [
   './',
-  './index.html',
-  './tienda.html', 
-  './admin.html',
-  './manifest.webmanifest'
+  'index.html',
+  'tienda.html', 
+  'admin.html',
+  'manifest.webmanifest'
 ];
 
 self.addEventListener('install', event => {
