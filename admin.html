@@ -98,16 +98,10 @@
               <label class="form-label">Descripción *</label>
               <textarea id="descripcion" class="form-control" rows="3" required></textarea>
             </div>
-            <div class="col-md-6">
-              <label for="categoria" class="form-label">Categoría *</label>
-              <select class="form-select" id="categoria" required>
-                <option value="">Selecciona la categoría del producto</option>
-                <option value="Línea Blanca">Línea Blanca</option>
-                <option value="Sala">Sala</option>
-                <option value="Comedor">Comedor</option>
-                <option value="Habitación">Habitación</option>
-              </select>
-            </div>
+            
+
+
+
             <div class="col-md-6">
               <label class="form-label">Stock Disponible *</label>
               <input type="number" id="stock" class="form-control" value="1" min="0" required />
@@ -141,14 +135,14 @@
  
   // Configuración Firebase
   const firebaseConfig = {
-   apiKey: "AIzaSyDszNdIoOe251gNQWlIWcDVxJO28OVSEZI",
-  authDomain: "pwaint-16ba7.firebaseapp.com",
-  databaseURL: "https://pwaint-16ba7-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "pwaint-16ba7",
-  storageBucket: "pwaint-16ba7.firebasestorage.app",
-  messagingSenderId: "563587192850",
-  appId: "1:563587192850:web:3ec9c02f9dd105b3ffa0cb"
-
+    apiKey: "AIzaSyAl4yBplA1jUYrnXfbRzp1n6LEAUr_hUpo",
+    authDomain: "pwahome-97ee5.firebaseapp.com",
+    databaseURL: "https://pwaint-16ba7-default-rtdb.europe-west1.firebasedatabase.app/",
+    projectId: "pwahome-97ee5",
+    storageBucket: "pwahome-97ee5.firebasestorage.app",
+    messagingSenderId: "18986359988",
+    appId: "1:18986359988:web:0d0c2f2890bbd54c080be1",
+    measurementId: "G-8QS2ZB4BM4"
   };
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -266,7 +260,11 @@ col.innerHTML = `
             <p class="card-text">${p.descripcion}</p>
             <p class="card-text">
               <strong>Precio:</strong> $${currencyMX(p.precio)}<br>
-              <strong>Categoría:</strong> ${p.categoria}<br>
+              
+
+
+
+
               <strong>Código:</strong> ${p.codigo}<br>
               <strong>Marca:</strong> ${p.marca}<br>
               <strong>Modelo:</strong> ${p.modelo}<br>
@@ -348,7 +346,13 @@ col.innerHTML = `
     const tamaño = document.getElementById('tamaño').value.trim();
     const precio = parseFloat(document.getElementById('precioProducto').value || '0');
     const descripcion = document.getElementById('descripcion').value.trim();
-    const categoria = document.getElementById('categoria').value.trim();
+    
+
+
+
+
+
+
     const stock = parseInt(document.getElementById('stock').value || '0');
     const imagenesInput = document.getElementById('imagenesProducto');
 
@@ -368,7 +372,14 @@ col.innerHTML = `
         tamaño,
         precio,
         descripcion,
-        categoria,
+      
+
+
+
+
+
+
+        
         stock,
         imagenes: imagenesUrls,
         imagenUrl: imagenesUrls[0] || '',
