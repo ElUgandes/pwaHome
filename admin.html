@@ -142,12 +142,11 @@
   // Configuración Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyAl4yBplA1jUYrnXfbRzp1n6LEAUr_hUpo",
-    authDomain: "pwahome-97ee5.firebaseapp.com",
-    databaseURL: "https://pwaint-16ba7-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "pwahome-97ee5",
-    storageBucket: "pwahome-97ee5.firebasestorage.app",
-    messagingSenderId: "18986359988",
-    appId: "1:18986359988:web:0d0c2f2890bbd54c080be1",
+  authDomain: "pwahome-97ee5.firebaseapp.com",
+  projectId: "pwahome-97ee5",  // ¡IMPORTANTE! Usa projectId, NO databaseURL aquí
+  storageBucket: "pwahome-97ee5.appspot.com",  // Corregido
+  messagingSenderId: "18986359988",
+  appId: "1:18986359988:web:0d0c2f2890bbd54c080be1
   };
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
