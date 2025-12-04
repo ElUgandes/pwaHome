@@ -98,10 +98,16 @@
               <label class="form-label">Descripción *</label>
               <textarea id="descripcion" class="form-control" rows="3" required></textarea>
             </div>
-            
-
-
-
+            <div class="col-md-6">
+              <label for="categoria" class="form-label">Categoría *</label>
+              <select class="form-select" id="categoria" required>
+                <option value="">Selecciona la categoría del producto</option>
+                <option value="Línea Blanca">Línea Blanca</option>
+                <option value="Sala">Sala</option>
+                <option value="Comedor">Comedor</option>
+                <option value="Habitación">Habitación</option>
+              </select>
+            </div>
             <div class="col-md-6">
               <label class="form-label">Stock Disponible *</label>
               <input type="number" id="stock" class="form-control" value="1" min="0" required />
@@ -260,11 +266,7 @@ col.innerHTML = `
             <p class="card-text">${p.descripcion}</p>
             <p class="card-text">
               <strong>Precio:</strong> $${currencyMX(p.precio)}<br>
-              
-
-
-
-
+              <strong>Categoría:</strong> ${p.categoria}<br>
               <strong>Código:</strong> ${p.codigo}<br>
               <strong>Marca:</strong> ${p.marca}<br>
               <strong>Modelo:</strong> ${p.modelo}<br>
@@ -346,13 +348,7 @@ col.innerHTML = `
     const tamaño = document.getElementById('tamaño').value.trim();
     const precio = parseFloat(document.getElementById('precioProducto').value || '0');
     const descripcion = document.getElementById('descripcion').value.trim();
-    
-
-
-
-
-
-
+    const categoria = document.getElementById('categoria').value.trim();
     const stock = parseInt(document.getElementById('stock').value || '0');
     const imagenesInput = document.getElementById('imagenesProducto');
 
@@ -368,18 +364,12 @@ col.innerHTML = `
         codigo,
         marca,
         modelo,
+      
         color,
         tamaño,
         precio,
         descripcion,
-      
-
-
-
-
-
-
-        
+        categoria,
         stock,
         imagenes: imagenesUrls,
         imagenUrl: imagenesUrls[0] || '',
