@@ -156,16 +156,7 @@
       messagingSenderId: "563587192850",
       appId: "1:563587192850:web:3ec9c02f9dd105b3ffa0cb"
     };
- // Cloudinary
- const cloudName = "dwo3ffocr";      
-  const uploadPreset = "pwa_unsigned";
 
-  const container = document.getElementById('productsContainer');
-    const form = document.getElementById('productoForm');
-    const previewDiv = document.getElementById('previewImagenes');
-    const imagenesInput = document.getElementById('imagenesProducto');
-
- 
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { 
@@ -226,6 +217,22 @@
         maximumFractionDigits: 2
       });
     }
+// Cloudinary
+const cloudName = "dwo3ffocr";      
+  const uploadPreset = "pwa_unsigned";
+
+  const modal = new bootstrap.Modal(document.getElementById('productoModal'));
+  const form = document.getElementById('productoForm');
+  const container = document.getElementById('productsContainer');
+  const imagenesInput = document.getElementById('imagenesProducto');
+  const previewDiv = document.getElementById('previewImagenes');
+
+  function currencyMX(n){
+    return Number(n||0).toLocaleString('es-MX',{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
+  }
 
      // Preview de imágenes
   imagenesInput.addEventListener('change', function(e) {
@@ -344,11 +351,8 @@ async function uploadImagesToCloudinary(files) {
       } catch (error) {
         console.error("Error subiendo imagen:", error);
       }
-    }
-    
-    return urls;
-  }
-   
+    }}
+
     if (imagenesInput && previewDiv) {
       imagenesInput.addEventListener('change', function(e) {
         previewDiv.innerHTML = '';
@@ -443,6 +447,8 @@ service cloud.firestore {
           const stock = parseInt(document.getElementById('stock').value || 0);
           const categoria = document.getElementById('categoria').value;
           const descripcion = document.getElementById('descripcion').value.trim();
+          
+          //función  cloudinary
           
           // Validaciones
           if (!nombre || !codigo || !categoria) {
