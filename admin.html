@@ -295,8 +295,49 @@
         });
       });
     }
+// Cloudinary
+  const cloudName = "dwo3ffocr";      
+  const uploadPreset = "pwa_unsigned";
 
-   
+  const modal = new bootstrap.Modal(document.getElementById('productoModal'));
+  const form = document.getElementById('productoForm');
+  const container = document.getElementById('productsContainer');
+  const imagenesInput = document.getElementById('imagenesProducto');
+  const previewDiv = document.getElementById('previewImagenes');
+
+  function currencyMX(n){
+    return Number(n||0).toLocaleString('es-MX',{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
+  }
+   // Subir múltiples imágenes a Cloudinary
+  async function uploadImagesToCloudinary(files) {
+    const urls = [];
+    
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
+      formData.append("folder", "productos");
+
+      try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+        if (data.secure_url) {
+          urls.push(data.secure_url);
+        }
+      } catch (error) {
+        console.error("Error subiendo imagen:", error);
+      }
+    }
+    
+    return urls;
+  }
     if (imagenesInput && previewDiv) {
       imagenesInput.addEventListener('change', function(e) {
         previewDiv.innerHTML = '';
