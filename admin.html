@@ -155,16 +155,7 @@
       messagingSenderId: "563587192850",
       appId: "1:563587192850:web:3ec9c02f9dd105b3ffa0cb"
     };
- // Cloudinary
- const cloudName = "dghzl1j6g";      
-  const uploadPreset = "pwa_unsigned";
 
-  const container = document.getElementById('productsContainer');
-    const form = document.getElementById('productoForm');
-    const previewDiv = document.getElementById('previewImagenes');
-    const imagenesInput = document.getElementById('imagenesProducto');
-
- 
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { 
@@ -185,7 +176,10 @@
     }
 
     
-  
+    const container = document.getElementById('productsContainer');
+    const form = document.getElementById('productoForm');
+    const previewDiv = document.getElementById('previewImagenes');
+    const imagenesInput = document.getElementById('imagenesProducto');
 
    
     function updateStatus(message, type) {
@@ -226,26 +220,7 @@
       });
     }
 
-     // Preview de imágenes
-  imagenesInput.addEventListener('change', function(e) {
-    previewDiv.innerHTML = '';
-    const files = Array.from(e.target.files);
     
-    files.forEach(file => {
-      if (!file.type.startsWith('image/')) return;
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.className = 'thumb w-100';
-        img.style.height = '80px';
-        img.style.objectFit = 'cover';
-        previewDiv.appendChild(img);
-      };
-      reader.readAsDataURL(file);
-    });
-  });
     function renderProducts(productos) {
       if (!container) return;
       
@@ -320,33 +295,7 @@
         });
       });
     }
-// Subir múltiples imágenes a Cloudinary
-async function uploadImagesToCloudinary(files) {
-    const urls = [];
-    
-    for (const file of files) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", uploadPreset);
-      formData.append("folder", "productos");
 
-      try {
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: "POST",
-          body: formData
-        });
-
-        const data = await res.json();
-        if (data.secure_url) {
-          urls.push(data.secure_url);
-        }
-      } catch (error) {
-        console.error("Error subiendo imagen:", error);
-      }
-    }
-    
-    return urls;
-  }
    
     if (imagenesInput && previewDiv) {
       imagenesInput.addEventListener('change', function(e) {
