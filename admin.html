@@ -156,7 +156,16 @@
       messagingSenderId: "563587192850",
       appId: "1:563587192850:web:3ec9c02f9dd105b3ffa0cb"
     };
+ // Cloudinary
+ const cloudName = "dwo3ffocr";      
+  const uploadPreset = "pwa_unsigned";
 
+  const container = document.getElementById('productsContainer');
+    const form = document.getElementById('productoForm');
+    const previewDiv = document.getElementById('previewImagenes');
+    const imagenesInput = document.getElementById('imagenesProducto');
+
+ 
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { 
@@ -217,22 +226,6 @@
         maximumFractionDigits: 2
       });
     }
-// Cloudinary
-const cloudName = "dwo3ffocr";      
-  const uploadPreset = "pwa_unsigned";
-
-  const modal = new bootstrap.Modal(document.getElementById('productoModal'));
-  const form = document.getElementById('productoForm');
-  const container = document.getElementById('productsContainer');
-  const imagenesInput = document.getElementById('imagenesProducto');
-  const previewDiv = document.getElementById('previewImagenes');
-
-  function currencyMX(n){
-    return Number(n||0).toLocaleString('es-MX',{
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
-    });
-  }
 
      // Preview de imágenes
   imagenesInput.addEventListener('change', function(e) {
@@ -351,8 +344,11 @@ async function uploadImagesToCloudinary(files) {
       } catch (error) {
         console.error("Error subiendo imagen:", error);
       }
-    }}
-
+    }
+    
+    return urls;
+  }
+   
     if (imagenesInput && previewDiv) {
       imagenesInput.addEventListener('change', function(e) {
         previewDiv.innerHTML = '';
@@ -420,7 +416,7 @@ service cloud.firestore {
       }
     }
 
-    // ================= MANEJAR FORMULARIO =================
+    /*// ================= MANEJAR FORMULARIO =================
     if (form) {
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -447,8 +443,6 @@ service cloud.firestore {
           const stock = parseInt(document.getElementById('stock').value || 0);
           const categoria = document.getElementById('categoria').value;
           const descripcion = document.getElementById('descripcion').value.trim();
-          
-          //función  cloudinary
           
           // Validaciones
           if (!nombre || !codigo || !categoria) {
@@ -514,7 +508,136 @@ service cloud.firestore {
       navigator.serviceWorker.register('./sw.js')
         .then(reg => console.log(' Service Worker registrado:', reg.scope))
         .catch(err => console.log(' Service Worker error:', err));
+    }*/
+
+    // ================= MANEJAR FORMULARIO =================
+if (form) {
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (!db) {
+      showAlert('Firebase no configurado', 'danger');
+      return;
     }
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('submitSpinner');
+    
+    submitBtn.disabled = true;
+    spinner?.classList.remove('d-none');
+    
+    try {
+      // Obtener valores
+      const nombre = document.getElementById('nombreProducto').value.trim();
+      const codigo = document.getElementById('codigo').value.trim();
+      const marca = document.getElementById('marca').value.trim();
+      const color = document.getElementById('color').value.trim();
+      const tamaño = document.getElementById('tamaño').value.trim();
+      const precio = parseFloat(document.getElementById('precioProducto').value || 0);
+      const stock = parseInt(document.getElementById('stock').value || 0);
+      const categoria = document.getElementById('categoria').value;
+      const descripcion = document.getElementById('descripcion').value.trim();
+      
+      // Validaciones
+      if (!nombre || !codigo || !categoria) {
+        throw new Error('Completa los campos obligatorios (*)');
+      }
+      
+      if (precio <= 0) {
+        throw new Error('El precio debe ser mayor a 0');
+      }
+      
+      if (stock < 0) {
+        throw new Error('El stock no puede ser negativo');
+      }
+      
+      // Crear objeto producto
+      const productoData = {
+        nombre,
+        codigo,
+        marca,
+        color,
+        tamaño,
+        precio,
+        stock,
+        categoria,
+        descripcion,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      };
+
+      /////////////// Subir Imagenes a cloudinary ///////////////////////////
+
+      /* Obtenemos los archivos que el usuario selecciono en el input de imagenes.
+      "imagenesInput" es el <input type="file"> del formulario. */
+      const files = imagenesInput.files;
+
+      /* Creamos un arreglo vacío donde guardaremos las URLs finales
+      que Cloudinary nos regrese después de subir las imagenes. */
+      let imagenesURLs = [];
+
+      // Verificamos si se seleccionó al menos una imagen.
+      if (files && files.length > 0) {
+
+        // Mostramos un mensaje para avisar que las imágenes se están subiendo.
+        showAlert('Subiendo imágenes, espera...', 'info');
+
+        /* Llamamos a nuestra función "uploadImagesToCloudinary"
+        Esta función sube cada imagen a Cloudinary y nos devuelve un arreglo
+        con las URLs seguras (secure_url) de cada imagen subida. */
+        imagenesURLs = await uploadImagesToCloudinary(files);
+
+        // Si no se subió ninguna imagen, mostramos un error.
+        if (imagenesURLs.length === 0) {
+          throw new Error('No se pudieron subir las imágenes');
+        }
+
+        /* Si todo salió bien, agregamos las URLs al objeto del producto.
+        Esto hará que Firestore guarde las imágenes junto con el producto. */
+        productoData.imagenes = imagenesURLs;
+      }
+
+      /////////////////// Cloudinary ///////////////////////////////
+
+      // Guardar en Firestore
+      await addDoc(collection(db, 'productos'), productoData);
+      
+      showAlert('Producto guardado correctamente', 'success');
+      form.reset();
+      if (previewDiv) previewDiv.innerHTML = '';
+      
+      // Cerrar modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('productoModal'));
+      modal?.hide();
+      
+    } catch (error) {
+      console.error('Error guardando producto:', error);
+      showAlert(`Error: ${error.message}`, 'danger');
+    } finally {
+      submitBtn.disabled = false;
+      spinner?.classList.add('d-none');
+    }
+  });
+}
+
+// ================= MANEJO DE CONEXIÓN =================
+window.addEventListener('online', () => {
+  updateStatus('🌐 Conectado', 'success');
+});
+
+window.addEventListener('offline', () => {
+  updateStatus(' Modo offline', 'warning');
+  showAlert('Trabajando en modo offline', 'warning');
+});
+
+// ================= SERVICE WORKER =================
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+    .then(reg => console.log(' Service Worker registrado:', reg.scope))
+    .catch(err => console.log(' Service Worker error:', err));
+}
+
+
   </script>
 </body>
 </html>
