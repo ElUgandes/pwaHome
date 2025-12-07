@@ -26,6 +26,7 @@
     font-weight: 700;
     font-style: italic;
   }
+  
 p,a{
     font-family: "Unna";
     font-size: x-large;
@@ -35,13 +36,16 @@ p,a{
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            background-color:#070707; ;
             text-align: center;
             
     
         }
+        p{color:aliceblue;}
         h1{
             font-family: "Beau Rivage", cursive;
             font-size: 50px;
+            color: #FFD966;
         }
         .img1{
             position: fixed;
@@ -49,17 +53,21 @@ p,a{
             left: 25%;
             width: 20%;
             height: 40%;
-            background-image: url(../img/tienda.jpg);
+            background-image: url(../img/carrito.png);
+            size-adjust:10%;
+            background-repeat: no-repeat;
             background-size: contain;
-            border-radius: 100%;
+           
         }
         .img1:hover{
             border-radius: 5px;
             border-color: black;
+            transform: scale(1.2);
         }
         .img2:hover{
             border-radius: 5px;
             border-color: black;
+            transform: scale(1.2);
         }
         .img2{
             position: fixed;
@@ -67,9 +75,10 @@ p,a{
             left: 55%;
             width: 20%;
             height: 40%;
-            background-image: url(../img/administrador.jpg);
+            background-image: url(../img/admin.png);
             background-size: contain;
             border-radius: 100%;
+            background-repeat: no-repeat;
         }
         .menu {
             position: fixed;
@@ -80,6 +89,12 @@ p,a{
             margin-top: 50px;
             
         }
+        .logo{
+            position: fixed;
+            left: 30%;
+            width: 15%;
+            height: 15%;
+        }
         .btn {
             top: 70%;
             padding: 15px 30px;
@@ -88,15 +103,19 @@ p,a{
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            background-color: white;
+            background-color: transparent;
         }
         a{
             text-decoration: none;
-            color: black;
+            color: aliceblue;
+        }
+        a:hover{
+            color: #FFEF94;
+            text-decoration: wavy;
         }
         .tienda {
             position: fixed;
-            right: 61%;
+            right: 59%;
             color:black;
             text-decoration: none;
         }
@@ -108,7 +127,7 @@ p,a{
 
         .admin {
             position: fixed;
-            right: 29%;
+            right: 27%;
             color:black;
             text-decoration: none;
         }

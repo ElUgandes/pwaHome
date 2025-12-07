@@ -10,17 +10,18 @@
   <link rel="stylesheet" href="styleIcons.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
-    body { background:#f7f7f7; }
+    body { background-image: url(img/1348.jpg); }
     .thumb { object-fit: cover; height: 100px; border-radius: .5rem; }
     .thumb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; }
-    .logo { height: 50px; margin-right: 15px; }
+    .logo { width:60px; height: 60px; margin-right: 15px; }
     .agregar {
       position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
-      border-radius: 10%; background: #45556C; color: white; border: none;
+      border-radius: 10%;  background: #070707; color: aliceblue; border: none;
       font-size: 28px; z-index: 1000; cursor: pointer;
-      box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
     }
-    .agregar:hover { transform: scale(1.3); }
+    .agregar:hover { transform: scale(1.3);
+    color: #FFD966;
+   }
     .navbar-custom { box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
   </style>
 </head>
@@ -30,7 +31,7 @@
   <nav class="navbar navbar-custom sticky-top">
     <div class="container">
       <div class="d-flex align-items-center w-100">
-        <img class="logo" src="img/logo.png" alt="">
+        <img class="logo" src="img/logo2.png" alt="">
         <h1 class="headtext">Administrador de Productos</h1>
         <div class="navbuttons">
           <a href="index.html" class="btn btn-outline-primary btn-sm me-2">
@@ -71,7 +72,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Nuevo Producto</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa fa-camera-retro" aria-hidden="true"></i></button>
         </div>
         <div class="modal-body">
           <form id="productoForm">
@@ -286,11 +287,11 @@
                 <p class="mb-1"><strong>Precio:</strong> $${currencyMX(p.precio)}</p>
                 <p class="mb-1"><strong>Código:</strong> ${p.codigo || 'N/A'}</p>
                 <p class="mb-1"><strong>Marca:</strong> ${p.marca || 'N/A'}</p>
-                <p class="mb-1"><strong>Colores disponibles:</strong> ${p.color || 'N/A'}</p>
+                <p class="mb-1"><strong>Color:</strong> ${p.color || 'N/A'}</p>
                 <p class="mb-1"><strong>Dimensiones del producto:</strong> ${p.tamaño || 'N/A'}</p>
                 <p class="mb-1"><strong>Categoría:</strong> <span class="badge bg-primary">${p.categoria || 'N/A'}</span></p>
                 <p class="mb-1"><strong>Stock:</strong> 
-                  <span class="badge ${p.stock > 0 ? 'bg-success' : 'bg-danger'}">
+                  <span class="badge ${p.stock > 0 ? 'bg-stock' : 'bg-danger'}">
                     ${p.stock || 0} unidades
                   </span>
                 </p>
@@ -416,99 +417,7 @@ service cloud.firestore {
       }
     }
 
-    /*// ================= MANEJAR FORMULARIO =================
-    if (form) {
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        if (!db) {
-          showAlert('Firebase no configurado', 'danger');
-          return;
-        }
-        
-        const submitBtn = document.getElementById('submitBtn');
-        const spinner = document.getElementById('submitSpinner');
-        
-        submitBtn.disabled = true;
-        spinner?.classList.remove('d-none');
-        
-        try {
-          // Obtener valores
-          const nombre = document.getElementById('nombreProducto').value.trim();
-          const codigo = document.getElementById('codigo').value.trim();
-          const marca = document.getElementById('marca').value.trim();
-          const color = document.getElementById('color').value.trim();
-          const tamaño = document.getElementById('tamaño').value.trim();
-          const precio = parseFloat(document.getElementById('precioProducto').value || 0);
-          const stock = parseInt(document.getElementById('stock').value || 0);
-          const categoria = document.getElementById('categoria').value;
-          const descripcion = document.getElementById('descripcion').value.trim();
-          
-          // Validaciones
-          if (!nombre || !codigo || !categoria) {
-            throw new Error('Completa los campos obligatorios (*)');
-          }
-          
-          if (precio <= 0) {
-            throw new Error('El precio debe ser mayor a 0');
-          }
-          
-          if (stock < 0) {
-            throw new Error('El stock no puede ser negativo');
-          }
-          
-          // Crear objeto producto
-          const productoData = {
-            nombre,
-            codigo,
-            marca,
-            color,
-            tamaño,
-            precio,
-            stock,
-            categoria,
-            descripcion,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
-          };
-          
-          // Guardar en Firestore
-          await addDoc(collection(db, 'productos'), productoData);
-          
-          showAlert('Producto guardado correctamente', 'success');
-          form.reset();
-          if (previewDiv) previewDiv.innerHTML = '';
-          
-          // Cerrar modal
-          const modal = bootstrap.Modal.getInstance(document.getElementById('productoModal'));
-          modal?.hide();
-          
-        } catch (error) {
-          console.error('Error guardando producto:', error);
-          showAlert(`Error: ${error.message}`, 'danger');
-        } finally {
-          submitBtn.disabled = false;
-          spinner?.classList.add('d-none');
-        }
-      });
-    }
-
-    // ================= MANEJO DE CONEXIÓN =================
-    window.addEventListener('online', () => {
-      updateStatus('🌐 Conectado', 'success');
-    });
     
-    window.addEventListener('offline', () => {
-      updateStatus(' Modo offline', 'warning');
-      showAlert('Trabajando en modo offline', 'warning');
-    });
-
-    // ================= SERVICE WORKER =================
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log(' Service Worker registrado:', reg.scope))
-        .catch(err => console.log(' Service Worker error:', err));
-    }*/
 
     // ================= MANEJAR FORMULARIO =================
 if (form) {
