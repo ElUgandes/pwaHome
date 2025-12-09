@@ -238,11 +238,255 @@ h6 {
     font-size: x-large;
 }
 .navbuttons{
-    position: fixed;
-    left: 80%;
+    position: relative;
+    right: 0%;
+    align-items:first baseline;
     
 }
+/*estilos responsive extra*/
 
+/* --- Estilos Generales --- */
+/* Aseguramos que el logo no desborde y tenga cursor en la zona de toque */
+.logo { 
+    width: 60px; 
+    height: 60px; 
+    margin-right: 15px; 
+    cursor: pointer; 
+}
+.logo1 { 
+    width: 60px; 
+    height: 60px; 
+    margin-right: 15px; 
+    position: relative;
+    left: 2%;
+}
+
+
+/* El título debe ocupar el espacio restante */
+.headtext {
+    font-size: 1.5rem; 
+    margin-left: 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* El contenedor principal de la nav bar debe permitir que los elementos floten */
+.navbar-custom .d-flex {
+    justify-content: space-between; /* Distribuye el espacio entre el logo/título y los botones */
+}
+
+/* --- Media Query para Vista Móvil (< 768px) --- */
+@media (max-width: 767px) {
+    
+    /* A. Ajustes de Tipografía y Logo en Nav Bar */
+    
+    .headtext {
+        font-size: 1.1rem; /* Título más pequeño en móvil */
+    }
+
+    /* B. Ajustes del Botón de Despliegue (el logo) */
+    
+    /* Hacemos el logo más pequeño cuando actúa como botón de toggle */
+    .navbar-toggler .logo {
+        width: 45px;
+        height: 45px;
+        margin-right: 0; /* Elimina el margen del logo para pegarlo al borde */
+        margin-left: -5px; /* Empuja el botón ligeramente a la izquierda si es necesario */
+    }
+    
+    /* El contenedor principal de la nav bar en móvil */
+    .navbar-custom .d-flex {
+        /* Aseguramos la alineación en la fila principal: Botón | Título | Espacio */
+        justify-content: flex-start; 
+    }
+    .logo1{
+        position: relative;
+        top: -20%;
+        visibility:hidden ;
+        height: 0%;
+        width: 0%   ;
+    }
+}
+
+/* --- Solución Global Anti-Desbordamiento --- */
+html, body {
+    /* 1. Previene el desbordamiento horizontal en todo el documento */
+    overflow-x: hidden; 
+    /* 2. Limita el ancho al 100% del viewport */
+    width: 100%;
+    max-width: 100%;
+}
+
+/* 3. Asegura que el padding/border se incluye en el ancho total (Bootstrap ya lo hace, pero es buena práctica) */
+* {
+    box-sizing: border-box;
+}
+
+/* 4. Asegura que el background no desborde */
+body {
+    background-size: cover; /* Ajusta el fondo sin desbordar */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* --- Media Query para Dispositivos Pequeños (e.g., Celulares) --- */
+
+@media (max-width: 768px) {
+    /* Ajustes para la vista móvil */
+    
+    .logo {
+        height: 30px; /* Reducir el tamaño del logo en móvil */
+    }
+
+    .headtext {
+        font-size: 1.1rem; /* Reducir el tamaño del título */
+        /* Aseguramos que el logo y el texto quepan, el texto crecerá para llenar el espacio */
+    }
+
+    /* Modificamos la estructura principal en móvil */
+    .d-flex {
+        /* Cambiamos la dirección principal a columna */
+        flex-direction: column; 
+        align-items: flex-start !important; /* Alineamos a la izquierda el contenido principal */
+    }
+
+    .headtext {
+        /* En móvil, queremos que el texto tenga un poco más de margen si está arriba del todo */
+        margin-bottom: 5px; 
+        /* En esta configuración, el flex-grow ya no es tan crítico */
+    }
+
+    /* Colocamos el logo y el título en una fila superior */
+    .d-flex > .logo, 
+    .d-flex > .headtext {
+        /* Para que queden uno al lado del otro, se envuelven */
+        width: auto; 
+    }
+
+    /* Agrupamos el logo y el texto en una línea */
+    .d-flex::before {
+        content: "";
+        display: block;
+        width: 100%;
+        order: -1; /* Lo ponemos primero */
+        display: flex;
+        align-items: center;
+        /* Como son los primeros hijos, no necesitamos ::before, mejor usamos un contenedor */
+        /* Dado que no podemos alterar el HTML, centramos los botones. */
+    }
+    
+    /* Adaptamos el contenedor de botones */
+    .navbuttons {
+        /* Ocupa todo el ancho disponible */
+        width: 100%; 
+        /* Los botones ahora se muestran uno debajo del otro */
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Espacio entre los botones */
+        margin-top: 10px; /* Separación de la línea superior */
+    }
+
+    /* Adaptamos los botones individuales */
+    .navbuttons a {
+        position:relative;
+        width: 100%; /* Hacemos que cada botón ocupe todo el ancho */
+        right: 45%; /* Centramos el texto dentro del botón */
+        margin: 0 !important; /* Eliminamos los márgenes laterales que pueda tener Bootstrap */
+    }
+
+    /* Arreglamos el margin-right que tenías en el primer botón */
+    .navbuttons a.me-2 {
+        margin-right: 0 !important; 
+    }
+}
+
+/* Opcional: Estilo para que el logo y el título se vean bien juntos en móvil */
+@media (max-width: 768px) {
+    /* Creamos un grupo para logo y texto dentro de .d-flex */
+    .d-flex {
+        /* Cambiamos la estructura para que los botones queden abajo */
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .logo-title-group {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between; /* Distribuye espacio si quieres que el texto esté a la derecha del logo */
+    }
+    
+    /* Para que esto funcione mejor, idealmente necesitarías envolver el logo y el h1 en un div, 
+    pero sin tocar el HTML, forzaremos una línea de logo/h1 y otra de botones. */
+    
+    .headtext {
+        flex-grow: 1; /* Permite que el título ocupe el espacio */
+        margin-bottom: 5px; /* Pequeño margen debajo del título para separar de los botones */
+    }
+}
+
+@media (max-width: 576px) {
+    
+    /* 1. Contenedor principal: Cambiar la dirección de flex a columna */
+    .d-flex.justify-content-between.align-items-center {
+        /* Fuerza que los elementos se apilen verticalmente */
+        flex-direction: column;
+        /* Alinea los elementos apilados a la izquierda para mejor lectura */
+        align-items: flex-start !important; 
+        /* Añade espacio extra para evitar que el texto se pegue */
+        margin-bottom: 1.5rem !important; 
+        position: relative;
+        right: 45%;
+    }
+
+    /* 2. Contenedor de texto: Ajustes */
+    .text {
+        width: 100%; /* Ocupa todo el ancho disponible */
+        position: fixed;
+        right: 45%;
+        margin-bottom: 10px; /* Separación clara entre el texto y el botón */
+    }
+
+    /* 3. Ajuste de tipografía (Opcional: hacer el texto más pequeño) */
+    .text h2 {
+        font-size: 1.25rem; /* Ajuste del tamaño del encabezado si es necesario */
+    }
+
+    /* 4. Elemento de acción (si es un botón, lo hacemos de ancho completo) */
+    /* Este selector asume que el elemento a la derecha es un botón o un enlace */
+    .d-flex > *:last-child:not(.text) {
+        width: 100%;
+        text-align: center; /* Centra el texto del botón */
+        /* Si estás usando las clases de Bootstrap d-sm-block o d-none, ya se adaptará */
+    }
+}
+
+
+/* Media Query para dispositivos pequeños (generalmente < 576px) */
+@media (max-width: 576px) {
+    
+    #statusIndicator {
+        /* 1. Prevenir desbordamiento de texto largo */
+        /* Asegura que si el texto es muy largo, se ajuste a la siguiente línea */
+        position: relative;
+        left: 42%;
+        white-space: normal;
+        
+        /* 2. Limitar el ancho */
+        /* Si quieres que ocupe todo el ancho del contenedor en móvil: */
+        max-width: 100%;
+        /* Opcional: Centrar el badge si ocupa menos del 100%
+        margin-left: auto;
+        margin-right: auto; */
+
+        /* 3. Asegurar el padding y márgenes de Bootstrap */
+        /* Las clases 'badge' de Bootstrap ya manejan bien el padding,
+           pero esta regla asegura que no se rompa el diseño */
+        padding-left: 0.6em !important;
+        padding-right: 0.6em !important;
+    }
+}
+/*estilos responsive adicionales*/
 .h1,
 h1 {
     font-size: calc(1.375rem + 1.5vw);
@@ -3524,19 +3768,20 @@ fieldset:disabled .btn {
 }
 
 .btn-primary {
-    background-color: #FFD966;
-    color: black;
-    --bs-btn-hover-color: white;
-        --bs-btn-hover-bg: #2EDB73;
-        --bs-btn-hover-border-color: #2EDB73;
-        --bs-btn-focus-shadow-rgb: 49, 132, 253;
-        --bs-btn-active-color: white;
-        --bs-btn-active-bg: black;
-        --bs-btn-active-border-color: #2EDB73;
-        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-        --bs-btn-disabled-color: #fff;
-        --bs-btn-disabled-bg: black;
-        --bs-btn-disabled-border-color: #2EDB73;
+    --bs-btn-color: aliceblue;
+    --bs-btn-bg: black;
+    --bs-btn-border-color: #ffd966;
+    --bs-btn-hover-color: #FFD966;
+    --bs-btn-hover-bg: #FFD966;
+    --bs-btn-hover-border-color: black;
+    --bs-btn-focus-shadow-rgb: 60, 153, 110;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #FFD966;
+    --bs-btn-active-border-color: black;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: aliceblue;
+    --bs-btn-disabled-bg: black;
+    --bs-btn-disabled-border-color: #FFD966;
 }
 
 .btn-secondary {
@@ -3556,20 +3801,20 @@ fieldset:disabled .btn {
 }
 
 .btn-success {
-    --bs-btn-color: #fff;
-    --bs-btn-bg: #198754;
-    --bs-btn-border-color: #198754;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #157347;
-    --bs-btn-hover-border-color: #146c43;
+    --bs-btn-color: aliceblue;
+    --bs-btn-bg: black;
+    --bs-btn-border-color: #ffd966;
+    --bs-btn-hover-color: #FFD966;
+    --bs-btn-hover-bg: #FFD966;
+    --bs-btn-hover-border-color: black;
     --bs-btn-focus-shadow-rgb: 60, 153, 110;
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #146c43;
-    --bs-btn-active-border-color: #13653f;
+    --bs-btn-active-bg: #FFD966;
+    --bs-btn-active-border-color: black;
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #198754;
-    --bs-btn-disabled-border-color: #198754
+    --bs-btn-disabled-color: aliceblue;
+    --bs-btn-disabled-bg: black;
+    --bs-btn-disabled-border-color: #FFD966;
 }
 
 .btn-info {
@@ -7176,13 +7421,14 @@ nav{
 .offcanvas-sm,
 .offcanvas-xl,
 .offcanvas-xxl {
+    font-family: "Unna";
     --bs-offcanvas-zindex: 1045;
     --bs-offcanvas-width: 400px;
     --bs-offcanvas-height: 30vh;
     --bs-offcanvas-padding-x: 1rem;
     --bs-offcanvas-padding-y: 1rem;
-    --bs-offcanvas-color: var(--bs-body-color);
-    --bs-offcanvas-bg: var(--bs-body-bg);
+    --bs-offcanvas-color: aliceblue;
+    background-image: url(../img/1348.jpg);
     --bs-offcanvas-border-width: var(--bs-border-width);
     --bs-offcanvas-border-color: var(--bs-border-color-translucent);
     --bs-offcanvas-box-shadow: var(--bs-box-shadow-sm);
