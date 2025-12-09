@@ -54,30 +54,36 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-white border-bottom sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
         <div class="container">
-            <div class="d-flex align-items-center">
-                <img class="logo" src="img/logo2.png" alt="">
-                <span class="navbar-brand mb-0 h1">Home Essence</span>
-                
-            </div>
-       
-            <div class="d-flex gap-2 align-items-center">
-
-                <a href="registro.html" class="btn btn-primary btn-sm me-2">
-                    <i class="bi bi-person-plus"></i> Registrarse
-                </a>
-                <a href="index.html" class="btn btn-outline-primary btn-sm me-2">
-                    <span class="icon-home"></span> Inicio
-                  </a>
-                <button class="btn btn-primary position-relative" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
-                    <span class="icon-shopping-bag"> Carrito
-                    <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
-                </button>
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img class="logo" src="img/logo2.png" alt="" style="height: 30px; margin-right: 8px;"> 
+                <span class="mb-0 h1">Home Essence</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <div class="navbar-nav d-flex align-items-center mt-2 mt-lg-0 gap-2">
+                    
+                    <a href="index.html" class="btn btn-outline-primary btn-sm">
+                        <span class="icon-home"></span> Inicio
+                    </a>
+                    
+                    <a href="registro.html" class="btn btn-primary btn-sm">
+                        <i class="bi bi-person-plus"></i> Registrarse
+                    </a>
+    
+                    <button class="btn btn-primary position-relative" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                        <span class="icon-shopping-bag"> Carrito</span>
+                        <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
-    
     <br>
     <br>
     <div class="text">
@@ -108,7 +114,7 @@
                 <div class="carousel-inner rounded shadow-lg">
                     
                     <div class="carousel-item active">
-                        <img src="img/descuento1.jpg" class="d-block w-100 carousel-img" alt="50% de descuento en Línea Blanca">
+                        <img src="img/Imagen2.png" class="d-block w-100 carousel-img" alt="50% de descuento en Línea Blanca">
                         
                         <div class="carousel-caption d-none d-md-block">
                             <h5>¡Mitad de Precio!</h5>
@@ -117,23 +123,23 @@
                     </div>
     
                     <div class="carousel-item">
-                        <img src="img/descuento2.jpg" class="d-block w-100 carousel-img" alt="2x1 en toda la colección de Sala">
+                        <img src="img/Imagen1.png" class="d-block w-100 carousel-img" alt="2x1 en toda la colección de Sala">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>Oferta 2 por 1</h5>
-                            <p class="h4 bg-primary text-white p-2 d-inline-block rounded">Colección Completa de Sala</p>
+                            <p class="h4 bg-primary text-white p-2 d-inline-block rounded">Colección Completa de Recamara   </p>
                         </div>
                     </div>
     
                     <div class="carousel-item">
-                        <img src="img/descuento3.jpg" class="d-block w-100 carousel-img" alt="Envío gratis en Comedores">
+                        <img src="img/Imagen4.png" class="d-block w-100 carousel-img" alt="Envío gratis en Comedores">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>¡Envío Gratis!</h5>
-                            <p class="h4 bg-success text-white p-2 d-inline-block rounded">En todos nuestros Comedores</p>
+                            <p class="h4 bg-success text-white p-2 d-inline-block rounded">En todas nuestras alfombras</p>
                         </div>
                     </div>
                     
                     <div class="carousel-item">
-                        <img src="img/descuento4.jpg" class="d-block w-100 carousel-img" alt="12 meses sin intereses en Habitación">
+                        <img src="img/7.2.png" class="d-block w-100 carousel-img" alt="12 meses sin intereses en Habitación">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>Súper Financiación</h5>
                             <p class="h4 bg-info text-dark p-2 d-inline-block rounded">12 Meses Sin Intereses</p>
@@ -141,7 +147,7 @@
                     </div>
                     
                     <div class="carousel-item">
-                        <img src="img/descuento5.jpg" class="d-block w-100 carousel-img" alt="Descuento extra del 10%">
+                        <img src="img/Imagen7.png" class="d-block w-100 carousel-img" alt="Descuento extra del 10%">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>Cupón de Bienvenida</h5>
                             <p class="h4 bg-warning text-dark p-2 d-inline-block rounded">10% Adicional en tu primera compra</p>
@@ -149,7 +155,7 @@
                     </div>
                     
                     <div class="carousel-item">
-                        <img src="img/descuento6.jpg" class="d-block w-100 carousel-img" alt="Liquidación por temporada">
+                        <img src="img/5.png" class="d-block w-100 carousel-img" alt="Liquidación por temporada">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>¡Últimas Piezas!</h5>
                             <p class="h4 bg-secondary text-white p-2 d-inline-block rounded">Liquidación de Temporada</p>

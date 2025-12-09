@@ -242,7 +242,8 @@
     /* Altura consistente en escritorio/tablet */
     height: 400px; 
     /* Asegura que la imagen cubra el área sin distorsionarse */
-    object-fit: cover; 
+    width:fit-content;
+
 }
 
 /* Media Query para móvil: Reducir la altura de la imagen */
@@ -250,6 +251,7 @@
     .carousel-img {
         height: 250px; /* Altura más cómoda para pantallas pequeñas */
     }
+   
 }
 
 
@@ -264,6 +266,7 @@
     border-width: 1px;
     color: #ffD966;
     box-shadow: none;
+    
 }
 
 body {
