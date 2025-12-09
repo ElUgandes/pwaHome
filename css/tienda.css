@@ -7794,7 +7794,8 @@ background-color: transparent;
 .offcanvas-body {
     flex-grow: 1;
     padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
-    overflow-y: auto
+    overflow-y: auto;
+    color: black;
 }
 
 .placeholder {
