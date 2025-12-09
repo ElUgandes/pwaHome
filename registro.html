@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+    <title>Registro de Usuario - Home Essence</title>
+    
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        /* Estilos esenciales para la página de registro */
+        body { 
+            background-image: url(img/1348.jpg); 
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center; /* Centra verticalmente el contenido */
+            justify-content: center; /* Centra horizontalmente el contenido */
+            padding: 20px;
+        }
+        /* Estilo para el contenedor del formulario */
+        .registro-container {
+            position: relative;
+            left: 17%;
+            max-width: 450px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            background-color: white; /* Fondo blanco para destacar el formulario */
+        }
+        .logo { width: 80px; height: 80px; margin-bottom: 20px; }
+        
+    </style>
+</head>
+<body>
+
+    <div class="registro-container">
+        <div class="text-center">
+            <img class="logo" src="img/logo2.png" alt="Logo">
+            <h1 class="h3 mb-3">Registro de Nuevo Usuario</h1>
+        </div>
+
+        <form id="registroForm">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="nombreCompleto" class="form-label">Nombre Completo *</label>
+                    <input type="text" id="nombreCompleto" class="form-control" required placeholder="Ej: Juan Pérez">
+                </div>
+                <div class="col-12">
+                    <label for="emailRegistro" class="form-label">Email *</label>
+                    <input type="email" id="emailRegistro" class="form-control" required placeholder="correo@dominio.com">
+                </div>
+                <div class="col-12">
+                    <label for="passwordRegistro" class="form-label">Contraseña *</label>
+                    <input type="password" id="passwordRegistro" class="form-control" required minlength="6" placeholder="Mínimo 6 caracteres">
+                </div>
+                <div class="col-12">
+                    <label for="confirmPassword" class="form-label">Confirmar Contraseña *</label>
+                    <input type="password" id="confirmPassword" class="form-control" required minlength="6" placeholder="Repite la contraseña">
+                </div>
+                
+                <div class="col-12 mt-4">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                            <span class="spinner-border spinner-border-sm d-none" id="submitSpinner"></span>
+                            Registrarse
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <div class="text-center mt-3">
+            <a href="login.html" class="text-muted small">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+    </div>
+    
+    <div id="statusIndicator" class="badge bg-info position-fixed bottom-0 end-0 m-3">Conectando...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        
+        //Credenciales de conexión (CONSERVADO)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDszNdIoOe251gNQWlIWcDVxJO28OVSEZI",
+            authDomain: "pwaint-16ba7.firebaseapp.com",
+            projectId: "pwaint-16ba7",
+            storageBucket: "pwaint-16ba7.firebasestorage.app",
+            messagingSenderId: "563587192850",
+            appId: "1:563587192850:web:3ec9c02f9dd105b3ffa0cb"
+        };
+        
+        // Elementos del formulario
+        const form = document.getElementById('registroForm');
+        
+        // Importar Firebase (ADAPTADO para solo usar AUTH)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        
+        let app, auth;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app); // Inicializa el servicio de autenticación
+            console.log("Firebase inicializado");
+            updateStatus("Listo para registrar", "success");
+        } catch (error) {
+            console.error(" Error Firebase:", error);
+            updateStatus("Error configurando Firebase", "danger");
+        }
+
+        // --- Funciones de Utilidad (CONSERVADAS y ADAPTADAS) ---
+
+        function updateStatus(message, type) {
+            const indicator = document.getElementById('statusIndicator');
+            if (!indicator) return;
+            
+            const colors = {
+                success: 'bg-success',
+                danger: 'bg-danger',
+                warning: 'bg-warning',
+                info: 'bg-info'
+            };
+            
+            indicator.className = `badge ${colors[type] || 'bg-info'}`;
+            indicator.textContent = message;
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+            alertDiv.style.zIndex = '1060';
+            alertDiv.style.maxWidth = '350px';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) alertDiv.remove();
+            }, 5000);
+        }
+        
+        // --- Lógica del Formulario de Registro (NUEVA) ---
+
+        if (form && auth) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const submitBtn = document.getElementById('submitBtn');
+                const spinner = document.getElementById('submitSpinner');
+                
+                // Obtener valores del formulario
+                const nombre = document.getElementById('nombreCompleto').value.trim();
+                const email = document.getElementById('emailRegistro').value.trim();
+                const password = document.getElementById('passwordRegistro').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Validaciones
+                if (password !== confirmPassword) {
+                    showAlert('Las contraseñas no coinciden', 'danger');
+                    return;
+                }
+                if (password.length < 6) {
+                    showAlert('La contraseña debe tener al menos 6 caracteres', 'danger');
+                    return;
+                }
+                
+                submitBtn.disabled = true;
+                spinner?.classList.remove('d-none');
+                
+                try {
+                    // 🚀 Llamada a la función de registro de Firebase Auth
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    
+                    // Registro exitoso
+                    const user = userCredential.user;
+                    
+                    // Opcional: Podrías almacenar el nombre en Firestore/Realtime DB o en el perfil de Firebase.
+                    // (Nota: Esta plantilla se enfoca en el registro de Auth, no incluye Firestore)
+                    
+                    showAlert(`✅ ¡Registro exitoso! Bienvenido, ${nombre}.`, 'success');
+                    console.log('Usuario registrado:', user);
+                    form.reset();
+                    
+                    // Redirigir al usuario (ejemplo)
+                    setTimeout(() => {
+                        window.location.href = 'index.html'; // Cambia esto a tu página de inicio de sesión o panel
+                    }, 2000);
+                    
+                } catch (error) {
+                    // Manejo de errores de Firebase Auth
+                    console.error('Error durante el registro:', error.code, error.message);
+                    
+                    let errorMessage = 'Error al registrar. Inténtalo de nuevo.';
+                    
+                    switch (error.code) {
+                        case 'auth/email-already-in-use':
+                            errorMessage = 'El email ya está registrado.';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = 'El formato del email no es válido.';
+                            break;
+                        case 'auth/weak-password':
+                            errorMessage = 'La contraseña es demasiado débil (mínimo 6 caracteres).';
+                            break;
+                        default:
+                            errorMessage = `Error: ${error.message}`;
+                    }
+
+                    showAlert(errorMessage, 'danger');
+                    
+                } finally {
+                    submitBtn.disabled = false;
+                    spinner?.classList.add('d-none');
+                }
+            });
+        }
+         //             SERVICE WORKER
+        
+         if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log(' Service Worker registrado:', reg.scope))
+                .catch(err => console.log(' Service Worker error:', err));
+        }
+
+        
+        //             MANEJO DE CONEXIÓN
+       
+        window.addEventListener('online', () => {
+            updateStatus('🌐 Conectado', 'success');
+        });
+
+        window.addEventListener('offline', () => {
+            updateStatus(' Modo offline', 'warning');
+            showAlert('Trabajando en modo offline', 'warning');
+        });
+        
+    </script>
+</body>
+</html>

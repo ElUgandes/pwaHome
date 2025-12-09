@@ -1,552 +1,644 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#ffffff">
-  <title>Administrador - Home Essence</title>
-  <link rel="stylesheet" href="css/admin.css">
-  <link rel="stylesheet" href="styleIcons.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <style>
-    body { background-image: url(img/1348.jpg); }
-    .thumb { object-fit: cover; height: 100px; border-radius: .5rem; }
-    .thumb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; }
-    .logo { width:60px; height: 60px; margin-right: 15px; }
-    .agregar {
-      position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
-      border-radius: 10%;  background: #070707; color: aliceblue; border: none;
-      font-size: 28px; z-index: 1000; cursor: pointer;
-    }
-    .agregar:hover { transform: scale(1.3);
-    color: #FFD966;
-   }
-    .navbar-custom { box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-  </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+    <title>Administrador - Home Essence</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="styleIcons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { background-image: url(img/1348.jpg); }
+        .thumb { object-fit: cover; height: 100px; border-radius: .5rem; }
+        .thumb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; }
+        .logo { width:60px; height: 60px; margin-right: 15px; }
+        .agregar {
+            position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
+            border-radius: 10%; background: #070707; color: aliceblue; border: none;
+            font-size: 28px; z-index: 1000; cursor: pointer;
+        }
+        .agregar:hover { 
+            transform: scale(1.3);
+            color: #FFD966;
+        }
+        .navbar-custom { box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .bg-stock { background-color: #28a745 !important; color: white; }
+    </style>
 </head>
 <body class="pb-5">
 
-  <!-- Barra de navegación simplificada -->
   <nav class="navbar navbar-custom sticky-top">
     <div class="container">
-      <div class="d-flex align-items-center w-100">
-        <img class="logo" src="img/logo2.png" alt="">
-        <h1 class="headtext">Administrador de Productos</h1>
-        <div class="navbuttons">
-          <a href="index.html" class="btn btn-outline-primary btn-sm me-2">
-            <span class="icon-home"></span> Inicio
-          </a>
-          <a href="tienda.html" class="btn btn-outline-success btn-sm">
-            <span class="icon-shopping-bag"> Tienda
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
+        <div class="d-flex align-items-center w-100">
+          <img class="logo1" src="img/logo2.png"> 
+            <button class="navbar-toggler d-md-none p-0 border-0" 
+                    type="button" 
+                    data-bs-toggle="offcanvas" 
+                    data-bs-target="#offcanvasNavbar" 
+                    aria-controls="offcanvasNavbar"
+                    aria-label="Toggle navigation"
+                    style="background: transparent;">
+                <img class="logo" src="img/logo2.png" alt="Menú">
+            </button>
 
-  <!-- Botón flotante -->
-  <button class="agregar" data-bs-toggle="modal" data-bs-target="#productoModal">
-    <i class="bi bi-plus-lg"></i>
-  </button>
-
-  <main class="container mt-4">
-    <div id="alertConfig" class="alert alert-warning d-none">
-      <strong>Configura Firebase:</strong> Ve a la consola y configura las reglas de Firestore.
-    </div>
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div class="text">
-        <h2 class="h4 mb-1">Productos Registrados</h2>
-        <p class="text-muted mb-0">Gestionar productos en venta</p>
-      </div>
-      <div id="statusIndicator" class="badge bg-info">Conectando...</div>
-    </div>
-    <br>
-    <div id="productsContainer" class="row"></div>
-  </main>
-
-  <!-- Modal corregido -->
-  <div class="modal fade" id="productoModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Nuevo Producto</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa fa-camera-retro" aria-hidden="true"></i></button>
-        </div>
-        <div class="modal-body">
-          <form id="productoForm">
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label">Nombre *</label>
-                <input id="nombreProducto" class="form-control" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Marca *</label>
-                <input id="marca" class="form-control" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Código *</label>
-                <input id="codigo" class="form-control" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Precio (MXN) *</label>
-                <input type="number" step="0.01" id="precioProducto" class="form-control" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Categoría *</label>
-                <select id="categoria" class="form-select" required>
-                  <option value="">Selecciona categoría</option>
-                  <option value="Línea Blanca">Línea Blanca</option>
-                  <option value="Sala">Sala</option>
-                  <option value="Comedor">Comedor</option>
-                  <option value="Habitación">Habitación</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Stock *</label>
-                <input type="number" id="stock" class="form-control" value="1" min="0" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Colores disponibles *</label>
-                <input id="color" class="form-control" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Dimensiones del producto *</label>
-                <input id="tamaño" class="form-control" required />
-              </div>
-              <div class="col-12">
-                <label class="form-label">Descripción</label>
-                <textarea id="descripcion" class="form-control" rows="2"></textarea>
-              </div>
-              <div class="col-12">
-                <label class="form-label">Imágenes (opcional)</label>
-                <input type="file" id="imagenesProducto" class="form-control" accept="image/*" multiple />
-                <div class="form-text text-muted">
-                  Se subirán a Cloudinary automáticamente
-                </div>
-                <div id="previewImagenes" class="thumb-grid mt-2"></div>
-              </div>
-              <div class="col-12 mt-3">
-                <div class="d-grid gap-2">
-                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    Cancelar
-                  </button>
-                  <button type="submit" class="btn btn-primary" id="submitBtn">
-                    <span class="spinner-border spinner-border-sm d-none" id="submitSpinner"></span>
-                    Guardar Producto
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script type="module">
-    
-    const firebaseConfig = {
-      apiKey: "AIzaSyDszNdIoOe251gNQWlIWcDVxJO28OVSEZI",
-      authDomain: "pwaint-16ba7.firebaseapp.com",
-      projectId: "pwaint-16ba7",
-      storageBucket: "pwaint-16ba7.firebasestorage.app",
-      messagingSenderId: "563587192850",
-      appId: "1:563587192850:web:3ec9c02f9dd105b3ffa0cb"
-    };
- // Cloudinary
- const cloudName = "dwo3ffocr";      
-  const uploadPreset = "pwa_unsigned";
-
-  const container = document.getElementById('productsContainer');
-    const form = document.getElementById('productoForm');
-    const previewDiv = document.getElementById('previewImagenes');
-    const imagenesInput = document.getElementById('imagenesProducto');
-
- 
-
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { 
-      getFirestore, collection, addDoc, serverTimestamp,
-      onSnapshot, query, orderBy, deleteDoc, doc
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    
-    let app, db;
-    try {
-      app = initializeApp(firebaseConfig);
-      db = getFirestore(app);
-      console.log("Firebase inicializado");
-      updateStatus("Conectado a Firebase", "success");
-    } catch (error) {
-      console.error(" Error Firebase:", error);
-      updateStatus("Error configurando Firebase", "danger");
-    }
-
-    
-  
-
-   
-    function updateStatus(message, type) {
-      const indicator = document.getElementById('statusIndicator');
-      if (!indicator) return;
-      
-      const colors = {
-        success: 'bg-success',
-        danger: 'bg-danger',
-        warning: 'bg-warning',
-        info: 'bg-info'
-      };
-      
-      indicator.className = `badge ${colors[type] || 'bg-info'}`;
-      indicator.textContent = message;
-    }
-
-    function showAlert(message, type) {
-      const alertDiv = document.createElement('div');
-      alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
-      alertDiv.style.zIndex = '1060';
-      alertDiv.style.maxWidth = '350px';
-      alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      `;
-      document.body.appendChild(alertDiv);
-      
-      setTimeout(() => {
-        if (alertDiv.parentNode) alertDiv.remove();
-      }, 5000);
-    }
-
-    function currencyMX(n) {
-      return Number(n || 0).toLocaleString('es-MX', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
-
-     // Preview de imágenes
-  imagenesInput.addEventListener('change', function(e) {
-    previewDiv.innerHTML = '';
-    const files = Array.from(e.target.files);
-    
-    files.forEach(file => {
-      if (!file.type.startsWith('image/')) return;
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.className = 'thumb w-100';
-        img.style.height = '80px';
-        img.style.objectFit = 'cover';
-        previewDiv.appendChild(img);
-      };
-      reader.readAsDataURL(file);
-    });
-  });
-    function renderProducts(productos) {
-      if (!container) return;
-      
-      if (!productos || productos.length === 0) {
-        container.innerHTML = `
-          <div class="col-12">
-            <div class="text-center py-5">
-              <i class="bi bi-inbox display-1 text-muted mb-3"></i>
-              <h4 class="text-muted mb-3">No hay productos</h4>
-              <p class="text-muted mb-4">Comienza agregando tu primer producto</p>
-              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productoModal">
-                <i class="bi bi-plus-lg"></i> Agregar Producto
-              </button>
-            </div>
-          </div>
-        `;
-        return;
-      }
-      
-      container.innerHTML = productos.map(p => `
-        <div class="col-md-6 col-lg-4 mb-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-body">
-              <div class="mb-3">
-                ${p.imagenes && p.imagenes.length > 0 ? 
-                  `<img src="${p.imagenes[0]}" class="img-fluid rounded" style="height: 150px; object-fit: cover;" alt="${p.nombre}">` :
-                  `<div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 150px;">
-                    <i class="bi bi-image text-muted display-6"></i>
-                  </div>`
-                }
-              </div>
-              <h5 class="card-title">${p.nombre || 'Sin nombre'}</h5>
-              <p class="card-text text-muted small mb-2">
-                ${(p.descripcion || '').substring(0, 100)}${(p.descripcion && p.descripcion.length > 100) ? '...' : ''}
-              </p>
-              <div class="product-info">
-                <p class="mb-1"><strong>Precio:</strong> $${currencyMX(p.precio)}</p>
-                <p class="mb-1"><strong>Código:</strong> ${p.codigo || 'N/A'}</p>
-                <p class="mb-1"><strong>Marca:</strong> ${p.marca || 'N/A'}</p>
-                <p class="mb-1"><strong>Color:</strong> ${p.color || 'N/A'}</p>
-                <p class="mb-1"><strong>Dimensiones del producto:</strong> ${p.tamaño || 'N/A'}</p>
-                <p class="mb-1"><strong>Categoría:</strong> <span class="badge bg-primary">${p.categoria || 'N/A'}</span></p>
-                <p class="mb-1"><strong>Stock:</strong> 
-                  <span class="badge ${p.stock > 0 ? 'bg-stock' : 'bg-danger'}">
-                    ${p.stock || 0} unidades
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div class="card-footer bg-transparent">
-              <button class="btn btn-danger w-100 delete-btn" data-id="${p._id}">
-                <i class="bi bi-trash"></i> Eliminar
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-      
-      // Agregar event listeners para eliminar
-      container.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-          const id = e.currentTarget.dataset.id;
-          if (id && confirm('¿Eliminar este producto permanentemente?')) {
-            try {
-              await deleteDoc(doc(db, 'productos', id));
-              showAlert('Producto eliminado', 'success');
-            } catch (error) {
-              console.error('Error eliminando:', error);
-              showAlert(' Error al eliminar', 'danger');
-            }
-          }
-        });
-      });
-    }
-// Subir múltiples imágenes a Cloudinary
-async function uploadImagesToCloudinary(files) {
-    const urls = [];
-    
-    for (const file of files) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", uploadPreset);
-      formData.append("folder", "productos");
-
-      try {
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: "POST",
-          body: formData
-        });
-
-        const data = await res.json();
-        if (data.secure_url) {
-          urls.push(data.secure_url);
-        }
-      } catch (error) {
-        console.error("Error subiendo imagen:", error);
-      }
-    }
-    
-    return urls;
-  }
-   
-    if (imagenesInput && previewDiv) {
-      imagenesInput.addEventListener('change', function(e) {
-        previewDiv.innerHTML = '';
-        const files = Array.from(e.target.files || []);
-        
-        files.forEach(file => {
-          if (!file.type.startsWith('image/')) return;
-          
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'thumb';
-            img.style.height = '80px';
-            previewDiv.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        });
-      });
-    }
-
-   
-    if (db) {
-      try {
-        const productosRef = collection(db, 'productos');
-        const q = query(productosRef, orderBy('createdAt', 'desc'));
-        
-        onSnapshot(q, 
-          (snapshot) => {
-            const productos = snapshot.docs.map(doc => ({
-              _id: doc.id,
-              ...doc.data()
-            }));
-            renderProducts(productos);
-            updateStatus(` Número de productos regustrados : ${productos.length} `, "success");
-          },
-          (error) => {
-            console.error("Error cargando productos:", error);
+            <h1 class="headtext flex-grow-1 ms-3">Administrador de Productos</h1>
             
-            if (error.code === 'permission-denied') {
-              showAlert(`
-                <h6> Permisos Denegados</h6>
-                <p class="small mb-0">Configura las reglas de Firestore:</p>
-                <ol class="small mb-0">
-                  <li>Abre <a href="https://console.firebase.google.com/project/pwaint-16ba7/firestore/rules" target="_blank">Firebase Console</a></li>
-                  <li>Pega esto y haz clic en PUBLICAR:</li>
-                </ol>
-                <pre class="bg-dark text-white p-2 small mt-2">rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
-    }
-  }
-}</pre>
-              `, 'danger');
-              updateStatus('Error de permisos', 'danger');
-            } else {
-              showAlert(`Error: ${error.message}`, 'danger');
-            }
-          }
-        );
-      } catch (error) {
-        console.error("Error inicializando listeners:", error);
-      }
-    }
+            <div class="navbuttons d-none d-md-flex">
+                <a href="index.html" class="btn btn-outline-primary btn-sm me-2">
+                    <span class="icon-home"></span> Inicio
+                </a>
+                <a href="tienda.html" class="btn btn-outline-success btn-sm">
+                    <span class="icon-shopping-bag"></span> Ver Tienda
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
 
-    
+    <!--Menú desplegable-->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Home Essence-Administrador</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+          <div class="d-grid gap-2">
+              <a href="index.html" class="btn btn-primary">
+                  <span class="icon-home"></span> Inicio
+              </a>
+              <a href="tienda.html" class="btn btn-success">
+                  <span class="icon-shopping-bag"></span> Ver Tienda
+              </a>
+          </div>
+          
+          <hr>
+          <p class="text-muted small">© Home Essence Admin Mode</p>
+      </div>
+  </div>
+ <!--Menú desplegable-->
 
-    // ================= MANEJAR FORMULARIO =================
-if (form) {
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    if (!db) {
-      showAlert('Firebase no configurado', 'danger');
-      return;
-    }
-    
-    const submitBtn = document.getElementById('submitBtn');
-    const spinner = document.getElementById('submitSpinner');
-    
-    submitBtn.disabled = true;
-    spinner?.classList.remove('d-none');
-    
-    try {
-      // Obtener valores
-      const nombre = document.getElementById('nombreProducto').value.trim();
-      const codigo = document.getElementById('codigo').value.trim();
-      const marca = document.getElementById('marca').value.trim();
-      const color = document.getElementById('color').value.trim();
-      const tamaño = document.getElementById('tamaño').value.trim();
-      const precio = parseFloat(document.getElementById('precioProducto').value || 0);
-      const stock = parseInt(document.getElementById('stock').value || 0);
-      const categoria = document.getElementById('categoria').value;
-      const descripcion = document.getElementById('descripcion').value.trim();
-      
-      // Validaciones
-      if (!nombre || !codigo || !categoria) {
-        throw new Error('Completa los campos obligatorios (*)');
-      }
-      
-      if (precio <= 0) {
-        throw new Error('El precio debe ser mayor a 0');
-      }
-      
-      if (stock < 0) {
-        throw new Error('El stock no puede ser negativo');
-      }
-      
-      // Crear objeto producto
-      const productoData = {
-        nombre,
-        codigo,
-        marca,
-        color,
-        tamaño,
-        precio,
-        stock,
-        categoria,
-        descripcion,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      };
+    <button class="agregar" id="nuevoProductoBtn" data-bs-toggle="modal" data-bs-target="#productoModal">
+        <i class="bi bi-plus-lg"></i>
+    </button>
 
-      /////////////// Subir Imagenes a cloudinary ///////////////////////////
+    <main class="container mt-4">
+        <div id="alertConfig" class="alert alert-warning d-none">
+            <strong>Configura Firebase:</strong> Ve a la consola y configura las reglas de Firestore.
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="text">
+                <h2 class="h4 mb-1">Productos Registrados</h2>
+                <p class="text-muted mb-0">Gestionar productos en venta</p>
+            </div>
+            <div id="statusIndicator" class="badge bg-info">Conectando...</div>
+        </div>
+        <br>
+        <div id="productsContainer" class="row"></div>
+    </main>
+<!--Formulario para registrar productos-->
+    <div class="modal fade" id="productoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Nuevo Producto</h5> 
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="productoForm">
+                        <input type="hidden" id="productoId" value="">
 
-      /* Obtenemos los archivos que el usuario selecciono en el input de imagenes.
-      "imagenesInput" es el <input type="file"> del formulario. */
-      const files = imagenesInput.files;
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nombre *</label>
+                                <input id="nombreProducto" class="form-control" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Marca *</label>
+                                <input id="marca" class="form-control" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Código *</label>
+                                <input id="codigo" class="form-control" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Precio (MXN) *</label>
+                                <input type="number" step="0.01" id="precioProducto" class="form-control" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Categoría *</label>
+                                <select id="categoria" class="form-select" required>
+                                    <option value="">Selecciona categoría</option>
+                                    <option value="Línea Blanca">Línea Blanca</option>
+                                    <option value="Sala">Sala</option>
+                                    <option value="Comedor">Comedor</option>
+                                    <option value="Habitación">Habitación</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Stock *</label>
+                                <input type="number" id="stock" class="form-control" value="1" min="0" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Colores disponibles *</label>
+                                <input id="color" class="form-control" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Dimensiones del producto *</label>
+                                <input id="tamaño" class="form-control" required />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Descripción</label>
+                                <textarea id="descripcion" class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Imágenes (opcional)</label>
+                                <input type="file" id="imagenesProducto" class="form-control" accept="image/*" multiple />
+                                <div class="form-text text-muted">
+                                    Se subirán a Cloudinary automáticamente
+                                </div>
+                                <div id="previewImagenes" class="thumb-grid mt-2"></div>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                        Cancelar
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                                        <span class="spinner-border spinner-border-sm d-none" id="submitSpinner"></span>
+                                        Guardar Producto
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      /* Creamos un arreglo vacío donde guardaremos las URLs finales
-      que Cloudinary nos regrese después de subir las imagenes. */
-      let imagenesURLs = [];
 
-      // Verificamos si se seleccionó al menos una imagen.
-      if (files && files.length > 0) {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-        // Mostramos un mensaje para avisar que las imágenes se están subiendo.
-        showAlert('Subiendo imágenes, espera...', 'info');
+    <script type="module">
+        
+        //Credenciales de conexión
+        const firebaseConfig = {
+            apiKey: "AIzaSyDszNdIoOe251gNQWlIWcDVxJO28OVSEZI",
+            authDomain: "pwaint-16ba7.firebaseapp.com",
+            projectId: "pwaint-16ba7",
+            storageBucket: "pwaint-16ba7.firebasestorage.app",
+            messagingSenderId: "563587192850",
+            appId: "1:563587192850:web:3ec9c02f9dd105b3ffa0cb"
+        };
+        // Cloudinary
+        const cloudName = "dwo3ffocr";       
+        const uploadPreset = "pwa_unsigned";
 
-        /* Llamamos a nuestra función "uploadImagesToCloudinary"
-        Esta función sube cada imagen a Cloudinary y nos devuelve un arreglo
-        con las URLs seguras (secure_url) de cada imagen subida. */
-        imagenesURLs = await uploadImagesToCloudinary(files);
+        const container = document.getElementById('productsContainer');
+        const form = document.getElementById('productoForm');
+        const previewDiv = document.getElementById('previewImagenes');
+        const imagenesInput = document.getElementById('imagenesProducto');
+        const nuevoProductoBtn = document.getElementById('nuevoProductoBtn'); // Botón flotante
 
-        // Si no se subió ninguna imagen, mostramos un error.
-        if (imagenesURLs.length === 0) {
-          throw new Error('No se pudieron subir las imágenes');
+        //Importar a firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { 
+            getFirestore, collection, addDoc, serverTimestamp,
+            onSnapshot, query, orderBy, deleteDoc, doc, updateDoc // <-- updateDoc y doc importados
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        
+        let app, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            console.log("Firebase inicializado");
+            updateStatus("Conectado a Firebase", "success");
+        } catch (error) {
+            console.error(" Error Firebase:", error);
+            updateStatus("Error configurando Firebase", "danger");
         }
 
-        /* Si todo salió bien, agregamos las URLs al objeto del producto.
-        Esto hará que Firestore guarde las imágenes junto con el producto. */
-        productoData.imagenes = imagenesURLs;
-      }
-
-      /////////////////// Cloudinary ///////////////////////////////
-
-      // Guardar en Firestore
-      await addDoc(collection(db, 'productos'), productoData);
       
-      showAlert('Producto guardado correctamente', 'success');
-      form.reset();
-      if (previewDiv) previewDiv.innerHTML = '';
+
+        function updateStatus(message, type) {
+            const indicator = document.getElementById('statusIndicator');
+            if (!indicator) return;
+            
+            const colors = {
+                success: 'bg-success',
+                danger: 'bg-danger',
+                warning: 'bg-warning',
+                info: 'bg-info'
+            };
+            
+            indicator.className = `badge ${colors[type] || 'bg-info'}`;
+            indicator.textContent = message;
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+            alertDiv.style.zIndex = '1060';
+            alertDiv.style.maxWidth = '350px';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) alertDiv.remove();
+            }, 5000);
+        }
+
+        function currencyMX(n) {
+            return Number(n || 0).toLocaleString('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).replace('MX$', '$'); // Formato más limpio
+        }
+
+        // Función para limpiar el formulario y prepararlo para un NUEVO producto
+        function resetModalForNew() {
+            if (form) form.reset();
+            if (document.getElementById('productoId')) document.getElementById('productoId').value = '';
+            if (document.getElementById('modalTitle')) document.getElementById('modalTitle').innerText = 'Nuevo Producto';
+            if (document.getElementById('submitBtn')) document.getElementById('submitBtn').innerText = 'Guardar Producto';
+            if (previewDiv) previewDiv.innerHTML = '';
+            if (imagenesInput) imagenesInput.value = ''; // Limpia el input de archivo
+        }
+        
+        // Listener para el botón flotante (Nuevo Producto)
+        if (nuevoProductoBtn) {
+            nuevoProductoBtn.addEventListener('click', resetModalForNew);
+        }
+        
       
-      // Cerrar modal
-      const modal = bootstrap.Modal.getInstance(document.getElementById('productoModal'));
-      modal?.hide();
+        //FUNCIÓN DE EDICIÓN DE PRODUCTOS
+        
+        
+        // Función 2. Carga los datos de un producto en el formulario.
+        function cargarDatosProductoEnFormulario(producto) {
+            if (!producto || !producto.id) {
+                console.error("Error: No se proporcionaron datos de producto válidos para cargar.");
+                return;
+            }
+
+            // Establece el ID del producto que se va a editar 
+            document.getElementById('productoId').value = producto.id; 
+
+            // Rellena los campos del formulario
+            document.getElementById('nombreProducto').value = producto.nombre || ''; 
+            document.getElementById('marca').value = producto.marca || '';
+            document.getElementById('codigo').value = producto.codigo || '';
+            document.getElementById('precioProducto').value = producto.precio || '';
+            document.getElementById('categoria').value = producto.categoria || '';
+            document.getElementById('stock').value = producto.stock || '';
+            document.getElementById('color').value = producto.color || '';
+            document.getElementById('tamaño').value = producto.tamaño || '';
+            document.getElementById('descripcion').value = producto.descripcion || '';
+
+            // Cambia el texto del modal a modo EDICIÓN
+            document.getElementById('modalTitle').innerText = "Editar Producto";
+            document.getElementById('submitBtn').innerText = "Actualizar Producto";
+            
+            // Limpia previsualizaciones de imágenes anteriores
+            document.getElementById('previewImagenes').innerHTML = '';
+            document.getElementById('imagenesProducto').value = ''; 
+            
+            // Si el producto tiene URLs de imágenes, las muestra (solo visual, no re-suben)
+            if (producto.imagenes && producto.imagenes.length > 0) {
+                 producto.imagenes.forEach(url => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.className = 'thumb';
+                    img.style.height = '80px';
+                    previewDiv.appendChild(img);
+                 });
+                 const text = document.createElement('span');
+                 text.className = 'form-text text-info small mt-1';
+                 text.innerText = 'Imágenes existentes. Selecciona nuevos archivos para reemplazarlas.';
+                 previewDiv.appendChild(text);
+            }
+        }
+
+        
+        // Subir múltiples imágenes a Cloudinary
+        async function uploadImagesToCloudinary(files) {
+            const urls = [];
+            
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", uploadPreset);
+                formData.append("folder", "productos");
+
+                try {
+                    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const data = await res.json();
+                    if (data.secure_url) {
+                        urls.push(data.secure_url);
+                    }
+                } catch (error) {
+                    console.error("Error subiendo imagen:", error);
+                }
+            }
+            
+            return urls;
+        }
+
+        // Preview de imágenes
+        if (imagenesInput && previewDiv) {
+            imagenesInput.addEventListener('change', function(e) {
+                previewDiv.innerHTML = '';
+                const files = Array.from(e.target.files || []);
+                
+                files.forEach(file => {
+                    if (!file.type.startsWith('image/')) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'thumb w-100';
+                        img.style.height = '80px';
+                        img.style.objectFit = 'cover';
+                        previewDiv.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+
+        
+        //RENDERIZACIÓN DE PRODUCTOS ACTUALIZADOS
       
-    } catch (error) {
-      console.error('Error guardando producto:', error);
-      showAlert(`Error: ${error.message}`, 'danger');
-    } finally {
-      submitBtn.disabled = false;
-      spinner?.classList.add('d-none');
-    }
-  });
-}
+      
+        function renderProducts(productos) {
+            if (!container) return;
+            
+            if (!productos || productos.length === 0) {
+                // ... (código de no hay productos)
+                // Usar resetModalForNew en el botón 'Agregar Producto'
+                container.innerHTML = `
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                            <h4 class="text-muted mb-3">No hay productos</h4>
+                            <p class="text-muted mb-4">Comienza agregando tu primer producto</p>
+                            <button class="btn btn-primary" id="tempNuevoProductoBtn" data-bs-toggle="modal" data-bs-target="#productoModal">
+                                <i class="bi bi-plus-lg"></i> Agregar Producto
+                            </button>
+                        </div>
+                    </div>
+                `;
+                 document.getElementById('tempNuevoProductoBtn')?.addEventListener('click', resetModalForNew);
+                return;
+            }
+            
+            container.innerHTML = productos.map(p => {
+                // Prepara los datos del producto para ser guardados con el botón
+                const productData = { 
+                    id: p._id, 
+                    nombre: p.nombre, 
+                    marca: p.marca,
+                    codigo: p.codigo,
+                    precio: p.precio,
+                    categoria: p.categoria,
+                    stock: p.stock,
+                    color: p.color,
+                    tamaño: p.tamaño,
+                    descripcion: p.descripcion,
+                    imagenes: p.imagenes || []
+                };
 
-// ================= MANEJO DE CONEXIÓN =================
-window.addEventListener('online', () => {
-  updateStatus('🌐 Conectado', 'success');
-});
+                return `
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    ${p.imagenes && p.imagenes.length > 0 ? 
+                                      `<img src="${p.imagenes[0]}" class="img-fluid rounded" style="height: 150px; object-fit: cover;" alt="${p.nombre}">` :
+                                      `<div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 150px;">
+                                          <i class="bi bi-image text-muted display-6"></i>
+                                      </div>`
+                                    }
+                                </div>
+                                <h5 class="card-title">${p.nombre || 'Sin nombre'}</h5>
+                                <p class="card-text text-muted small mb-2">
+                                    ${(p.descripcion || '').substring(0, 100)}${(p.descripcion && p.descripcion.length > 100) ? '...' : ''}
+                                </p>
+                                <div class="product-info">
+                                    <p class="mb-1"><strong>Precio:</strong> ${currencyMX(p.precio)}</p>
+                                    <p class="mb-1"><strong>Código:</strong> ${p.codigo || 'N/A'}</p>
+                                    <p class="mb-1"><strong>Marca:</strong> ${p.marca || 'N/A'}</p>
+                                    <p class="mb-1"><strong>Color:</strong> ${p.color || 'N/A'}</p>
+                                    <p class="mb-1"><strong>Dimensiones:</strong> ${p.tamaño || 'N/A'}</p>
+                                    <p class="mb-1"><strong>Categoría:</strong> <span class="badge bg-primary">${p.categoria || 'N/A'}</span></p>
+                                    <p class="mb-1"><strong>Stock:</strong> 
+                                        <span class="badge ${p.stock > 0 ? 'bg-stock' : 'bg-danger'}">
+                                            ${p.stock || 0} unidades
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <button type="button" class="btn btn-warning edit-btn mb-2 w-100"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#productoModal"
+                                        data-product='${JSON.stringify(productData)}'>Editar Producto
+                                </button>
+                                <button class="btn btn-danger w-100 delete-btn" data-id="${p._id}">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+           
+            container.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    try {
+                        // Obtiene el objeto del producto guardado en el atributo data-product
+                        const productoData = JSON.parse(e.currentTarget.dataset.product);
+                        // Carga esos datos en el formulario del modal
+                        cargarDatosProductoEnFormulario(productoData);
 
-window.addEventListener('offline', () => {
-  updateStatus(' Modo offline', 'warning');
-  showAlert('Trabajando en modo offline', 'warning');
-});
+                    } catch (error) {
+                        console.error("Error al cargar datos del producto para edición:", error);
+                        showAlert('Error al cargar datos del producto.', 'danger');
+                    }
+                });
+            });
 
-// ================= SERVICE WORKER =================
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js')
-    .then(reg => console.log(' Service Worker registrado:', reg.scope))
-    .catch(err => console.log(' Service Worker error:', err));
-}
+            // Agregar event listeners para eliminar
+            container.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    if (id && confirm('¿Eliminar este producto permanentemente?')) {
+                        try {
+                            await deleteDoc(doc(db, 'productos', id));
+                            showAlert('Producto eliminado', 'success');
+                        } catch (error) {
+                            console.error('Error eliminando:', error);
+                            showAlert(' Error al eliminar', 'danger');
+                        }
+                    }
+                });
+            });
+            // ----------------------------------------------------
+        }
 
 
-  </script>
+       //datos a firebase
+        if (db) {
+            try {
+                const productosRef = collection(db, 'productos');
+                const q = query(productosRef, orderBy('createdAt', 'desc'));
+                
+                onSnapshot(q, 
+                    (snapshot) => {
+                        const productos = snapshot.docs.map(doc => ({
+                            _id: doc.id,
+                            ...doc.data()
+                        }));
+                        renderProducts(productos);
+                        updateStatus(` Número de productos registrados: ${productos.length} `, "success");
+                    },
+                    (error) => {
+                        console.error("Error cargando productos:", error);
+                        
+                    }
+                );
+            } catch (error) {
+                console.error("Error inicializando listeners:", error);
+            }
+        }
+
+       //Actualizar formulario
+        if (form) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!db) {
+                    showAlert('Firebase no configurado', 'danger');
+                    return;
+                }
+                
+                const submitBtn = document.getElementById('submitBtn');
+                const spinner = document.getElementById('submitSpinner');
+                
+                submitBtn.disabled = true;
+                spinner?.classList.remove('d-none');
+                
+                // Obtener el ID del campo oculto. Si tiene valor, es EDICIÓN.
+                const productoIdAEditar = document.getElementById('productoId').value;
+                
+                try {
+                    // Obtener valores del formulario
+                    const nombre = document.getElementById('nombreProducto').value.trim();
+                    const codigo = document.getElementById('codigo').value.trim();
+                    const marca = document.getElementById('marca').value.trim();
+                    const color = document.getElementById('color').value.trim();
+                    const tamaño = document.getElementById('tamaño').value.trim();
+                    const precio = parseFloat(document.getElementById('precioProducto').value || 0);
+                    const stock = parseInt(document.getElementById('stock').value || 0);
+                    const categoria = document.getElementById('categoria').value;
+                    const descripcion = document.getElementById('descripcion').value.trim();
+                    
+                    // Validaciones
+                    if (!nombre || !codigo || !categoria) {
+                        throw new Error('Completa los campos obligatorios (*)');
+                    }
+                    if (precio <= 0) {
+                        throw new Error('El precio debe ser mayor a 0');
+                    }
+                    if (stock < 0) {
+                        throw new Error('El stock no puede ser negativo');
+                    }
+                    
+                    // Crear objeto base (usando un nuevo objeto para no modificar los datos existentes en la edición)
+                    let productoData = {
+                        nombre, codigo, marca, color, tamaño, precio, stock, categoria, descripcion,
+                        updatedAt: serverTimestamp() // Siempre actualiza la fecha de modificación
+                    };
+
+                    // Subir nuevas imágenes 
+                    const files = imagenesInput.files;
+                    if (files && files.length > 0) {
+                        showAlert('Subiendo nuevas imágenes, espera...', 'info');
+                        const imagenesURLs = await uploadImagesToCloudinary(files);
+
+                        if (imagenesURLs.length === 0) {
+                            throw new Error('No se pudieron subir las imágenes');
+                        }
+                        // Las nuevas URLs reemplazan a las anteriores en el objeto
+                        productoData.imagenes = imagenesURLs;
+                    }
+                    
+                    
+                    if (productoIdAEditar) {
+                        // ES EDICIÓN
+                        // No se pasa el createdAt, solo se actualizan los campos necesarios
+                        await updateDoc(doc(db, 'productos', productoIdAEditar), productoData);
+                        showAlert('Producto actualizado correctamente', 'success');
+                    } else {
+                        // ES CREACIÓN
+                        productoData.createdAt = serverTimestamp(); // Añade la fecha de creación
+                        await addDoc(collection(db, 'productos'), productoData);
+                        showAlert('Producto guardado correctamente', 'success');
+                    }
+
+                    // Limpiar y cerrar
+                    form.reset();
+                    if (previewDiv) previewDiv.innerHTML = '';
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('productoModal'));
+                    modal?.hide();
+                    
+                } catch (error) {
+                    console.error('Error guardando/actualizando producto:', error);
+                    showAlert(`Error: ${error.message}`, 'danger');
+                } finally {
+                    submitBtn.disabled = false;
+                    spinner?.classList.add('d-none');
+                    resetModalForNew(); // Asegura que el modal quede limpio para la próxima vez
+                }
+            });
+        }
+        
+        
+        //             SERVICE WORKER
+        
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log(' Service Worker registrado:', reg.scope))
+                .catch(err => console.log(' Service Worker error:', err));
+        }
+
+        
+        //             MANEJO DE CONEXIÓN
+       
+        window.addEventListener('online', () => {
+            updateStatus('🌐 Conectado', 'success');
+        });
+
+        window.addEventListener('offline', () => {
+            updateStatus(' Modo offline', 'warning');
+            showAlert('Trabajando en modo offline', 'warning');
+        });
+
+    </script>
 </body>
 </html>
